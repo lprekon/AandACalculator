@@ -149,8 +149,12 @@ def generate_ground_roster(roster, max_value = 40):
 		order_of_battle[BOMBER] += 1
 		muster = Army(*order_of_battle)
 
+def score_roster(roster, rounds):
+	for army in roster:
+		army.score_army(rounds = rounds)
 
-def generateOverview(rounds, costs, overview_file_name = "overview_matrix.txt", atk_file_name = "overview_attack.txt", def_file_name = "overview_defense.txt"):
+
+def writeOverview(rounds, costs, overview_file_name = "overview_matrix.txt", atk_file_name = "overview_attack.txt", def_file_name = "overview_defense.txt"):
 	column_headers = ["{:^20}".format(c) for c in costs]
 	row_headers = ["{:>2}".format(r) for r in rounds]
 
@@ -168,9 +172,7 @@ def generateOverview(rounds, costs, overview_file_name = "overview_matrix.txt", 
 		defenders_matrix += row_headers[r - 1]
 		for c in costs:
 			roster = []
-			generate_ground_roster(roster, max_value = c)
-			for army in roster:
-				army.score_army(rounds = r)
+			run_simulation(roster=roster, rounds=r, costs=c)			
 			best_attacker = sorted(roster, key = lambda x: x.atk_score, reverse = True)[0]
 			best_defender = sorted(roster, key = lambda x: x.def_score, reverse = True)[0]
 			atk_file.write("ROUND:{:>2}\tCOST:{:>2}\n".format(r, c))
@@ -192,14 +194,19 @@ def generateOverview(rounds, costs, overview_file_name = "overview_matrix.txt", 
 	overview_file.write(defenders_matrix)
 	overview_file.close()
 
+def run_simulation(roster, rounds, costs):
+	generate_ground_roster(roster, max_value = costs)
+	score_roster(roster, rounds=rounds)
+
+
 def main():
 	rounds = [i for i in range(1, 11)]
 	costs = [i for i in range (5, 45, 5)]
-	overview_directory = "overview_RND" + str(rounds[0]) + "-" + str(rounds[-1]) + "_COSTS" + str(costs[0]) + "-" + str(costs[-1]) + "-" + str(costs[1] - costs[0])
+	overview_directory = "overview_RND" +  "{:0>2}".format(str(rounds[0])) + "-" + "{:0>2}".format(str(rounds[-1])) + "_COSTS" + "{:0>2}".format(str(costs[0])) + "-" + "{:0>2}".format(str(costs[-1])) + "-" + "{:0>2}".format(str(costs[1] - costs[0]))
 	if not os.path.isdir(overview_directory):
 		os.mkdir(overview_directory)
 	os.chdir(overview_directory)
-	generateOverview(rounds, costs)
+	writeOverview(rounds, costs)
 
 
 	
