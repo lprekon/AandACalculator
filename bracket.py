@@ -206,9 +206,9 @@ def write_report(rounds, costs, atk_file_prefix = "attack", def_file_prefix = "d
 			attackers_ranked = sorted(roster, key = lambda x: x.atk_score, reverse = True)
 			defenders_ranked = sorted(roster, key = lambda x: x.def_score, reverse = True)
 			with open("{}_Rounds-{:0>2}_Cost-{:0>2}.txt".format(atk_file_prefix, r, c), 'w') as atk_file, open("{}_Rounds-{:0>2}_Cost-{:0>2}.txt".format(def_file_prefix, r, c), 'w') as def_file:
-				for i in range(entries_per_log):
-					atk_file.write(str(attackers_ranked) + "\n")
-					def_file.write(str(defenders_ranked) + "\n")
+				for i in range(min(entries_per_log, len(roster))):
+					atk_file.write(str(attackers_ranked[i]) + "\n")
+					def_file.write(str(defenders_ranked[i]) + "\n")
 
 
 
