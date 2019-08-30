@@ -151,16 +151,16 @@ def generate_ground_roster(roster, max_value = 40):
 		order_of_battle[BOMBER] += 1
 		muster = Army(*order_of_battle)
 
-def score_roster(roster, rounds):
+def score_roster(roster, rounds, wounds = 1):
 	for army in roster:
-		army.score_army(rounds = rounds)
+		army.score_army(rounds = rounds, wounds_per_round = wounds)
 
 #roster is passed in rather than returned to keep large rosters off the stack (not *certain* how that would work in python, but better safe than sorry)
-def run_simulation(roster, rounds, costs):
+def run_simulation(roster, rounds, costs, wounds = 1):
 	generate_ground_roster(roster, max_value = costs)
-	score_roster(roster, rounds=rounds)
+	score_roster(roster, rounds=rounds, wounds = wounds)
 
-def write_overview(rounds, costs, overview_file_name = "overview_matrix.txt", atk_file_name = "overview_attack.txt", def_file_name = "overview_defense.txt"):
+def write_overview(rounds, costs, wounds, overview_file_name = "overview_matrix.txt", atk_file_name = "overview_attack.txt", def_file_name = "overview_defense.txt"):
 	column_headers = ["{:^20}".format(c) for c in costs]
 	row_headers = ["{:>2}".format(r) for r in rounds]
 	attackers_matrix = "  "
@@ -177,9 +177,11 @@ def write_overview(rounds, costs, overview_file_name = "overview_matrix.txt", at
 		defenders_matrix += row_headers[r - 1]
 		for c in costs:
 			roster = []
-			run_simulation(roster=roster, rounds=r, costs=c)	
-			best_attacker = sorted(roster, key = lambda x: x.atk_score, reverse = True)[0]
-			best_defender = sorted(roster, key = lambda x: x.def_score, reverse = True)[0]
+			run_simulation(roster=roster, rounds=r, costs=c, wounds = wounds)
+			attackers_ranked = sorted(roster, key = lambda x: x.atk_score, reverse = True)
+			defenders_ranked = sorted(roster, key = lambda x: x.def_score, reverse = True)
+			best_attacker = attackers_ranked[0]
+			best_defender = defenders_ranked[0]
 			atk_file.write("ROUND:{:>2}\tCOST:{:>2}\n".format(r, c))
 			atk_file.write(str(best_defender) + "\n\n")
 			def_file.write("ROUND:{:>2}\tCOST:{:>2}\n".format(r, c))
