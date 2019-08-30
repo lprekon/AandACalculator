@@ -194,17 +194,19 @@ def write_overview(rounds, costs, wounds, overview_file_name = "overview_matrix.
 	def_file.close()
 	overview_file = open(overview_file_name, 'w')
 	overview_file.write("{:^122}\n".format("Best Attackers"))
+	overview_file.write("Round{:<55}Cost\n".format(""))
 	overview_file.write(attackers_matrix)
 	overview_file.write("\n\n")
 	overview_file.write("{:^122}\n".format("Best Defenders"))
+	overview_file.write("Round{:<55}Cost\n".format(""))
 	overview_file.write(defenders_matrix)
 	overview_file.close()
 
-def write_report(rounds, costs, atk_file_prefix = "attack", def_file_prefix = "defend", entries_per_log=20):
+def write_report(rounds, costs, wounds, atk_file_prefix = "attack", def_file_prefix = "defend", entries_per_log=20):
 	for r in rounds:
 		for c in costs:
 			roster = []
-			run_simulation(roster=roster, rounds=r, costs=c)
+			run_simulation(roster=roster, rounds=r, wounds=wounds, costs=c)
 			attackers_ranked = sorted(roster, key = lambda x: x.atk_score, reverse = True)
 			defenders_ranked = sorted(roster, key = lambda x: x.def_score, reverse = True)
 			with open("{}_Rounds-{:0>2}_Cost-{:0>2}.txt".format(atk_file_prefix, r, c), 'w') as atk_file, open("{}_Rounds-{:0>2}_Cost-{:0>2}.txt".format(def_file_prefix, r, c), 'w') as def_file:
@@ -217,17 +219,18 @@ def write_report(rounds, costs, atk_file_prefix = "attack", def_file_prefix = "d
 def main():
 	rounds = [i for i in range(1, 11)]
 	costs = [i for i in range (5, 45, 5)]
-	#overview_directory = "overview_RND" +  "{:0>2}".format(str(rounds[0])) + "-" + "{:0>2}".format(str(rounds[-1])) + "_COSTS" + "{:0>2}".format(str(costs[0])) + "-" + "{:0>2}".format(str(costs[-1])) + "-" + "{:0>2}".format(str(costs[1] - costs[0]))
-	overview_directory = "overview_RND{:0>2}-{:0>2}_COSTS{:0>2}-{:0>2}-{:0>2}".format(rounds[0], rounds[-1], costs[0], costs[-1], (costs[1] - costs[0]))
-	if not os.path.isdir(overview_directory):
-		os.mkdir(overview_directory)
-	os.chdir(overview_directory)
-	write_overview(rounds, costs)
+	wounds = 1
+	#simulation_directory = "overview_RND" +  "{:0>2}".format(str(rounds[0])) + "-" + "{:0>2}".format(str(rounds[-1])) + "_COSTS" + "{:0>2}".format(str(costs[0])) + "-" + "{:0>2}".format(str(costs[-1])) + "-" + "{:0>2}".format(str(costs[1] - costs[0]))
+	simulation_directory = "simulation_RND{:0>2}-{:0>2}_COSTS{:0>2}-{:0>2}-{:0>2}_WOUNDS{:0>2}".format(rounds[0], rounds[-1], costs[0], costs[-1], (costs[1] - costs[0]), wounds)
+	if not os.path.isdir(simulation_directory):
+		os.mkdir(simulation_directory)
+	os.chdir(simulation_directory)
+	write_overview(rounds, costs, wounds)
 
 	if not os.path.isdir("detailed_reports"):
 		os.mkdir("detailed_reports")
 	os.chdir("detailed_reports")
-	write_report(rounds, costs)
+	write_report(rounds, costs, wounds)
 	
 
 if __name__ == '__main__':
