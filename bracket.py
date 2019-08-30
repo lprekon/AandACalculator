@@ -1,4 +1,5 @@
 import argparse
+import os
 
 INFANTRY = 0
 ARTILLERY = 1
@@ -192,11 +193,14 @@ def generateOverview(rounds, costs, overview_file_name = "overview_matrix.txt", 
 	overview_file.close()
 
 def main():
-	
-
 	rounds = [i for i in range(1, 11)]
 	costs = [i for i in range (5, 45, 5)]
+	overview_directory = "overview_RND" + str(rounds[0]) + "-" + str(rounds[-1]) + "_COSTS" + str(costs[0]) + "-" + str(costs[-1]) + "-" + str(costs[1] - costs[0])
+	if not os.path.isdir(overview_directory):
+		os.mkdir(overview_directory)
+	os.chdir(overview_directory)
 	generateOverview(rounds, costs)
+
 
 	
 	 
