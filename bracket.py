@@ -160,7 +160,7 @@ def run_simulation(roster, rounds, costs, wounds = 1):
 	generate_ground_roster(roster, max_value = costs)
 	score_roster(roster, rounds=rounds, wounds = wounds)
 
-def write_overview(rounds, costs, wounds, overview_file_name = "overview_matrix.txt", atk_file_name = "overview_attack.txt", def_file_name = "overview_defense.txt"):
+def write_overview(rounds, costs, wounds, overview_file_prefix = "overview_matrix", atk_file_name = "overview_attack.txt", def_file_name = "overview_defense.txt"):
 	column_headers = ["{:^20}".format(c) for c in costs]
 	row_headers = ["{:>2}".format(r) for r in rounds]
 	attackers_matrix = "  "
@@ -192,12 +192,13 @@ def write_overview(rounds, costs, wounds, overview_file_name = "overview_matrix.
 		defenders_matrix += "\n\n"
 	atk_file.close()
 	def_file.close()
+	overview_file_name = "{}.txt".format(overview_file_prefix)
 	overview_file = open(overview_file_name, 'w')
-	overview_file.write("{:^122}\n".format("Best Attackers"))
+	overview_file.write("{:^122}\n".format("Best Attackers - WOUNDS " + str(wounds)))
 	overview_file.write("Round{:<55}Cost\n".format(""))
 	overview_file.write(attackers_matrix)
 	overview_file.write("\n\n")
-	overview_file.write("{:^122}\n".format("Best Defenders"))
+	overview_file.write("{:^122}\n".format("Best Defenders - WOUNDS " + str(wounds)))
 	overview_file.write("Round{:<55}Cost\n".format(""))
 	overview_file.write(defenders_matrix)
 	overview_file.close()
@@ -219,7 +220,7 @@ def write_report(rounds, costs, wounds, atk_file_prefix = "attack", def_file_pre
 def main():
 	rounds = [i for i in range(1, 11)]
 	costs = [i for i in range (5, 45, 5)]
-	wounds = 1
+	wounds = 2
 	#simulation_directory = "overview_RND" +  "{:0>2}".format(str(rounds[0])) + "-" + "{:0>2}".format(str(rounds[-1])) + "_COSTS" + "{:0>2}".format(str(costs[0])) + "-" + "{:0>2}".format(str(costs[-1])) + "-" + "{:0>2}".format(str(costs[1] - costs[0]))
 	simulation_directory = "simulation_RND{:0>2}-{:0>2}_COSTS{:0>2}-{:0>2}-{:0>2}_WOUNDS{:0>2}".format(rounds[0], rounds[-1], costs[0], costs[-1], (costs[1] - costs[0]), wounds)
 	if not os.path.isdir(simulation_directory):
