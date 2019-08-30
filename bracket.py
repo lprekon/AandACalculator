@@ -154,7 +154,7 @@ def score_roster(roster, rounds):
 		army.score_army(rounds = rounds)
 
 
-def writeOverview(rounds, costs, overview_file_name = "overview_matrix.txt", atk_file_name = "overview_attack.txt", def_file_name = "overview_defense.txt"):
+def write_overview(rounds, costs, overview_file_name = "overview_matrix.txt", atk_file_name = "overview_attack.txt", def_file_name = "overview_defense.txt"):
 	column_headers = ["{:^20}".format(c) for c in costs]
 	row_headers = ["{:>2}".format(r) for r in rounds]
 
@@ -206,7 +206,7 @@ def main():
 	if not os.path.isdir(overview_directory):
 		os.mkdir(overview_directory)
 	os.chdir(overview_directory)
-	writeOverview(rounds, costs)
+	write_overview(rounds, costs)
 
 
 	
