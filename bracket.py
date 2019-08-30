@@ -112,7 +112,9 @@ class Army:
 		 "ATK\t\t" + str(self.atk_score)+ "\n" +\
 		 "DEF\t\t" + str(self.def_score) + "\n" +\
 		 "RNDS\t\t" + str(self.rounds) + "\n" +\
-		 "WNDS\t\t" + str(self.wounds_per_round)
+		 "WNDS\t\t" + str(self.wounds_per_round) + "\n" +\
+		 "ATKCARD\t" + str(self.atk_card) + "\n" +\
+		 "DEFCARD\t" + str(self.def_card) + "\n"
 
 
 def generate_ground_roster(roster, max_value = 40):
@@ -153,11 +155,14 @@ def score_roster(roster, rounds):
 	for army in roster:
 		army.score_army(rounds = rounds)
 
+#roster is passed in rather than returned to keep large rosters off the stack (not *certain* how that would work in python, but better safe than sorry)
+def run_simulation(roster, rounds, costs):
+	generate_ground_roster(roster, max_value = costs)
+	score_roster(roster, rounds=rounds)
 
 def write_overview(rounds, costs, overview_file_name = "overview_matrix.txt", atk_file_name = "overview_attack.txt", def_file_name = "overview_defense.txt"):
 	column_headers = ["{:^20}".format(c) for c in costs]
 	row_headers = ["{:>2}".format(r) for r in rounds]
-
 	attackers_matrix = "  "
 	defenders_matrix = "  "
 	for c in column_headers:
@@ -172,7 +177,7 @@ def write_overview(rounds, costs, overview_file_name = "overview_matrix.txt", at
 		defenders_matrix += row_headers[r - 1]
 		for c in costs:
 			roster = []
-			run_simulation(roster=roster, rounds=r, costs=c)			
+			run_simulation(roster=roster, rounds=r, costs=c)	
 			best_attacker = sorted(roster, key = lambda x: x.atk_score, reverse = True)[0]
 			best_defender = sorted(roster, key = lambda x: x.def_score, reverse = True)[0]
 			atk_file.write("ROUND:{:>2}\tCOST:{:>2}\n".format(r, c))
@@ -183,7 +188,6 @@ def write_overview(rounds, costs, overview_file_name = "overview_matrix.txt", at
 			defenders_matrix += "   I{:0>2}A{:0>2}T{:0>2}F{:0>2}B{:0>2}  ".format(*(best_defender.total))
 		attackers_matrix += "\n\n"
 		defenders_matrix += "\n\n"
-
 	atk_file.close()
 	def_file.close()
 	overview_file = open(overview_file_name, 'w')
@@ -194,9 +198,18 @@ def write_overview(rounds, costs, overview_file_name = "overview_matrix.txt", at
 	overview_file.write(defenders_matrix)
 	overview_file.close()
 
-def run_simulation(roster, rounds, costs):
-	generate_ground_roster(roster, max_value = costs)
-	score_roster(roster, rounds=rounds)
+def write_report(rounds, costs, atk_file_prefix = "attack", def_file_prefix = "defend", entries_per_log=20):
+	for r in rounds:
+		for c in costs:
+			roster = []
+			run_simulation(roster=roster, rounds=r, costs=c)
+			attackers_ranked = sorted(roster, key = lambda x: x.atk_score, reverse = True)
+			defenders_ranked = sorted(roster, key = lambda x: x.def_score, reverse = True)
+			with open("{}_Rounds-{:0>2}_Cost-{:0>2}.txt".format(atk_file_prefix, r, c), 'w') as atk_file, open("{}_Rounds-{:0>2}_Cost-{:0>2}.txt".format(def_file_prefix, r, c), 'w') as def_file:
+				for i in range(entries_per_log):
+					atk_file.write(str(attackers_ranked) + "\n")
+					def_file.write(str(defenders_ranked) + "\n")
+
 
 
 def main():
@@ -208,38 +221,11 @@ def main():
 	os.chdir(overview_directory)
 	write_overview(rounds, costs)
 
-
+	if not os.path.isdir("detailed_reports"):
+		os.mkdir("detailed_reports")
+	os.chdir("detailed_reports")
+	write_report(rounds, costs)
 	
-	 
-
-	# roster = [] #an array of valid armies
-	# # 	roster = generate_ground_roster()
-	# generate_ground_roster(roster, max_value = 40) #passed by reference to avoid returning a large list
-	# for army in roster:
-	# 	army.score_army()
-	# sort_attackers = sorted(roster, key = lambda x: x.atk_score, reverse = True)
-	# sort_defenders = sorted(roster, key = lambda x: x.def_score, reverse = True)
-	# print("Best 3 attackers:")
-	# print("1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1")
-	# print(best_attackers[0])
-	# print("1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1")
-	# print("2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2")
-	# print(best_attackers[1])
-	# print("2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2")
-	# print("3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3")
-	# print(best_attackers[2])
-	# print("3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3")
-	# print("\nBest 3 defenders:")
-	# print("1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1")
-	# print(best_defenders[0])
-	# print("1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1")
-	# print("2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2")
-	# print(best_defenders[1])
-	# print("2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2")
-	# print("3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3")
-	# print(best_defenders[2])
-	# print("3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3")
-
 
 if __name__ == '__main__':
 	main()
