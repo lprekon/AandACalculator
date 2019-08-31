@@ -81,12 +81,12 @@ class Army:
 				assert(False)
 			
 			#take wounds
-			if not self.take_wounds():
+			if not self.take_wounds(attack):
 				return expected_hits # if take_wounds returned false, we're out of the fight
 			
 		return expected_hits
 
-	def take_wounds(self):
+	def take_wounds(self, attack):
 		for w in range(self.wounds_per_round):
 				if(not attack and active[BOMBER] > 0):
 					active[BOMBER] -= 1
