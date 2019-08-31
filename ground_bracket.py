@@ -88,7 +88,13 @@ class Army:
 				assert(False)
 			
 			#take wounds
-			for w in range(self.wounds_per_round):
+			if not self.take_wounds():
+				return expected_hits # if take_wounds returned false, we're out of the fight
+			
+		return expected_hits
+
+	def take_wounds(self):
+		for w in range(self.wounds_per_round):
 				if(not attack and active[BOMBER] > 0):
 					active[BOMBER] -= 1
 				elif(active[INFANTRY] > 0):
@@ -106,8 +112,8 @@ class Army:
 				else:
 					# if we ever have no more troops left to fight, then the fight is done and we return
 					assert(not any(active)) # we should have no troops
-					return expected_hits
-		return expected_hits
+					return False
+		return True
 
 	def __str__(self):
 		val = ""
