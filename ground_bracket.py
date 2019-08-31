@@ -40,9 +40,9 @@ class Army:
 		self.rounds = rounds
 		self.wounds_per_round = wounds_per_round
 		if(self.cost > 0):
-			self.atk_card = self.calculate_hits(attack=True)
+			self.atk_card = self.simulate_combat(attack=True)
 			self.atk_score = sum(self.atk_card) / self.cost
-			self.def_card = self.calculate_hits(attack=False)
+			self.def_card = self.simulate_combat(attack=False)
 			self.def_score = sum(self.def_card) / self.cost
 		else:
 			self.atk_card = []
@@ -50,7 +50,7 @@ class Army:
 			self.def_card = []
 			self.def_score = 0
 
-	def calculate_hits(self, attack=True):
+	def simulate_combat(self, attack=True):
 		#setup
 		self.active = self.total.copy()
 		power = [STATS[i]["attack"] if attack else STATS[i]["defense"] for i in range(NUM_UNIT_TYPES)]
