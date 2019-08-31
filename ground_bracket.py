@@ -172,36 +172,32 @@ def write_overview(rounds, costs, wounds, overview_file_prefix = "overview_matri
 	attackers_matrix += "\n\n"
 	defenders_matrix += "\n\n"
 	overall_matrix += "\n\n"
-	atk_file = open(atk_file_name, 'w')
-	def_file = open(def_file_name, 'w')
-	ova_file = open(overall_file_name, 'w')
-	for r in rounds:
-		attackers_matrix += row_headers[r - 1]
-		defenders_matrix += row_headers[r - 1]
-		overall_matrix += row_headers[r - 1]
-		for c in costs:
-			roster = []
-			run_simulation(roster=roster, rounds=r, costs=c, wounds = wounds)
-			attackers_ranked = sorted(roster, key = lambda x: x.atk_score, reverse = True)
-			defenders_ranked = sorted(roster, key = lambda x: x.def_score, reverse = True)
-			overall_ranked = sorted(roster, key = lambda x: x.atk_score + x.def_score, reverse = True)
-			best_attacker = attackers_ranked[0]
-			best_defender = defenders_ranked[0]
-			best_overall = overall_ranked[0]
-			atk_file.write("ROUND:{:>2}\tCOST:{:>2}\n".format(r, c))
-			atk_file.write(str(best_attacker) + "\n\n")
-			def_file.write("ROUND:{:>2}\tCOST:{:>2}\n".format(r, c))
-			def_file.write(str(best_defender) + "\n\n")
-			ova_file.write("ROUND:{:>2}\tCOST:{:>2}\n".format(r, c))
-			ova_file.write(str(best_overall) + "\n\n")
-			attackers_matrix += "   I{:0>2}A{:0>2}T{:0>2}F{:0>2}B{:0>2}  ".format(*(best_attacker.total))
-			defenders_matrix += "   I{:0>2}A{:0>2}T{:0>2}F{:0>2}B{:0>2}  ".format(*(best_defender.total))
-			overall_matrix += "   I{:0>2}A{:0>2}T{:0>2}F{:0>2}B{:0>2}  ".format(*(best_overall.total))
-		attackers_matrix += "\n\n"
-		defenders_matrix += "\n\n"
-	atk_file.close()
-	def_file.close()
-	ova_file.close()
+	with open(atk_file_name, 'w') as atk_file, open(def_file_name, 'w') as def_file, open(overall_file_name, 'w') as ova_file:
+		for r in rounds:
+			attackers_matrix += row_headers[r - 1]
+			defenders_matrix += row_headers[r - 1]
+			overall_matrix += row_headers[r - 1]
+			for c in costs:
+				roster = []
+				run_simulation(roster=roster, rounds=r, costs=c, wounds = wounds)
+				attackers_ranked = sorted(roster, key = lambda x: x.atk_score, reverse = True)
+				defenders_ranked = sorted(roster, key = lambda x: x.def_score, reverse = True)
+				overall_ranked = sorted(roster, key = lambda x: x.atk_score + x.def_score, reverse = True)
+				best_attacker = attackers_ranked[0]
+				best_defender = defenders_ranked[0]
+				best_overall = overall_ranked[0]
+				atk_file.write("ROUND:{:>2}\tCOST:{:>2}\n".format(r, c))
+				atk_file.write(str(best_attacker) + "\n\n")
+				def_file.write("ROUND:{:>2}\tCOST:{:>2}\n".format(r, c))
+				def_file.write(str(best_defender) + "\n\n")
+				ova_file.write("ROUND:{:>2}\tCOST:{:>2}\n".format(r, c))
+				ova_file.write(str(best_overall) + "\n\n")
+				attackers_matrix += "   I{:0>2}A{:0>2}T{:0>2}F{:0>2}B{:0>2}  ".format(*(best_attacker.total))
+				defenders_matrix += "   I{:0>2}A{:0>2}T{:0>2}F{:0>2}B{:0>2}  ".format(*(best_defender.total))
+				overall_matrix += "   I{:0>2}A{:0>2}T{:0>2}F{:0>2}B{:0>2}  ".format(*(best_overall.total))
+			attackers_matrix += "\n\n"
+			defenders_matrix += "\n\n"
+		
 	overview_file_name = "{}.txt".format(overview_file_prefix)
 	overview_file = open(overview_file_name, 'w')
 	overview_file.write("{:^122}\n".format("Best Attackers - WOUNDS " + str(wounds)))
