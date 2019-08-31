@@ -27,6 +27,13 @@ class Army:
 		self.total[BOMBER] = bomber		
 
 		self.cost = sum((self.total[x] * STATS[x]["cost"] for x in range(NUM_UNIT_TYPES)))
+
+		self.atk_score = 0
+		self.def_score = 0
+		self.atk_card = []
+		self.def_card = []
+		self.rounds = 0
+		self.wounds_per_round = 0
 		
 		
 	def score_army(self, rounds = 10, wounds_per_round = 1):
@@ -103,18 +110,20 @@ class Army:
 		return expected_hits
 
 	def __str__(self):
-		return "INFANTRY\t" + str(self.total[INFANTRY]) + "\n" +\
-		 "ARTILLERY\t" + str(self.total[ARTILLERY]) + "\n" +\
-		 "TANK\t\t" + str(self.total[TANK]) + "\n" +\
-		 "FIGHTER\t\t" + str(self.total[FIGHTER]) + "\n" +\
-		 "BOMBER\t\t" + str(self.total[BOMBER]) + "\n" +\
-		 "COST\t\t" + str(self.cost) + "\n" +\
+		val = ""
+		for i in range(NUM_UNIT_TYPES):
+			val += "{:<15} {}\n".format(STATS[i]["name"], self.total[i])
+
+		val += "COST\t\t" + str(self.cost) + "\n" +\
 		 "ATK\t\t" + str(self.atk_score)+ "\n" +\
 		 "DEF\t\t" + str(self.def_score) + "\n" +\
 		 "RNDS\t\t" + str(self.rounds) + "\n" +\
 		 "WNDS\t\t" + str(self.wounds_per_round) + "\n" +\
 		 "ATKCARD\t" + str(self.atk_card) + "\n" +\
 		 "DEFCARD\t" + str(self.def_card) + "\n"
+		
+		return val
+		 
 
 
 def generate_ground_roster(roster, max_value = 40):
