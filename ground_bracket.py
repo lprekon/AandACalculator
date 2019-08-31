@@ -52,15 +52,8 @@ class Army:
 
 	def calculate_hits(self, attack=True):
 		#setup
-		active = [0 for i in range(NUM_UNIT_TYPES)]
-		active[INFANTRY] = self.total[INFANTRY]
-		active[ARTILLERY] = self.total[ARTILLERY]
-		active[TANK] = self.total[TANK]
-		active[FIGHTER] = self.total[FIGHTER]
-		active[BOMBER] = self.total[BOMBER]
-		power = [0 for i in range(NUM_UNIT_TYPES)]
-		for i in range(NUM_UNIT_TYPES):
-			power[i] = (STATS[i]["attack"] if attack else STATS[i]["defense"])
+		active = self.total.copy()
+		power = [STATS[i]["attack"] if attack else STATS[i]["defense"] for i in range(NUM_UNIT_TYPES)]
 		expected_hits = [0 for i in range(self.rounds)]
 		assert(all((x>=0 for x in expected_hits)))
 		
