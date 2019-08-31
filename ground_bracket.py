@@ -44,11 +44,6 @@ class Army:
 			self.atk_score = sum(self.atk_card) / self.cost
 			self.def_card = self.simulate_combat(attack=False)
 			self.def_score = sum(self.def_card) / self.cost
-		else:
-			self.atk_card = []
-			self.atk_score = 0
-			self.def_card = []
-			self.def_score = 0
 
 	def simulate_combat(self, attack=True):
 		#setup
@@ -60,26 +55,7 @@ class Army:
 		#run simulation
 		for i in range (self.rounds):
 			#calculate hits
-			round_hits = [0 for j in range(NUM_UNIT_TYPES)]
-			for j in range(NUM_UNIT_TYPES):
-				round_hits[j] = self.active[j] * power[j]
-			counter = [self.active[INFANTRY], self.active[ARTILLERY]]
-			if(attack):
-				while counter[INFANTRY] > 0 and counter[ARTILLERY] > 0:
-					round_hits[INFANTRY] += 1
-					counter[INFANTRY] -= 1
-					counter[ARTILLERY] -= 1
-			expected_hits[i] = sum(round_hits) / 6.0
-			if any((x < 0 for x in expected_hits)):
-				print("ERROR: negative expected hits. Dumping...")
-				print("total: " + str(self.total))
-				print("self.active: " + str(self.active))
-				print("power: " + str(power))
-				print("expected_hits: " + str(expected_hits))
-				print("round: " + str(i))
-				print("round_hits: " + str(round_hits))
-				assert(False)
-			
+			expected_hits[i] = self.calculate_hits(power = power, attack = attack) / 6.0
 			#take wounds
 			if not self.take_wounds(attack):
 				return expected_hits # if take_wounds returned false, we're out of the fight
@@ -107,6 +83,18 @@ class Army:
 					assert(not any(self.active)) # we should have no troops
 					return False
 		return True
+
+	def calculate_hits(self, attack, power):
+		round_hits = [0 for j in range(NUM_UNIT_TYPES)]
+			for j in range(NUM_UNIT_TYPES):
+				round_hits[j] = self.active[j] * power[j]
+			counter = [self.active[INFANTRY], self.active[ARTILLERY]]
+			if(attack):
+				while counter[INFANTRY] > 0 and counter[ARTILLERY] > 0:
+					round_hits[INFANTRY] += 1
+					counter[INFANTRY] -= 1
+					counter[ARTILLERY] -= 1
+		return sum(round_hits)
 
 	def __str__(self):
 		val = ""
