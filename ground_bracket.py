@@ -26,8 +26,7 @@ class Army:
 		self.total[FIGHTER] = fighter
 		self.total[BOMBER] = bomber		
 
-		self.cost = STATS[INFANTRY]["cost"] * self.total[INFANTRY] + STATS[ARTILLERY]["cost"] * self.total[ARTILLERY] + self.total[TANK] * STATS[TANK]["cost"] + \
-		 self.total[FIGHTER] * STATS[FIGHTER]["cost"] + self.total[BOMBER] * STATS[BOMBER]["cost"]
+		self.cost = sum((self.total[x] * STATS[x]["cost"] for x in range(NUM_UNIT_TYPES)))
 		
 		
 	def score_army(self, rounds = 10, wounds_per_round = 1):
