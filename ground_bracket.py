@@ -52,12 +52,12 @@ class Army:
 
 	def calculate_hits(self, attack=True):
 		#setup
-		self.active = [0 for i in range(NUM_UNIT_TYPES)]
-		self.active[INFANTRY] = self.total[INFANTRY]
-		self.active[ARTILLERY] = self.total[ARTILLERY]
-		self.active[TANK] = self.total[TANK]
-		self.active[FIGHTER] = self.total[FIGHTER]
-		self.active[BOMBER] = self.total[BOMBER]
+		active = [0 for i in range(NUM_UNIT_TYPES)]
+		active[INFANTRY] = self.total[INFANTRY]
+		active[ARTILLERY] = self.total[ARTILLERY]
+		active[TANK] = self.total[TANK]
+		active[FIGHTER] = self.total[FIGHTER]
+		active[BOMBER] = self.total[BOMBER]
 		power = [0 for i in range(NUM_UNIT_TYPES)]
 		for i in range(NUM_UNIT_TYPES):
 			power[i] = (STATS[i]["attack"] if attack else STATS[i]["defense"])
@@ -69,8 +69,8 @@ class Army:
 			#calculate hits
 			round_hits = [0 for j in range(NUM_UNIT_TYPES)]
 			for j in range(NUM_UNIT_TYPES):
-				round_hits[j] = self.active[j] * power[j]
-			counter = [self.active[INFANTRY], self.active[ARTILLERY]]
+				round_hits[j] = active[j] * power[j]
+			counter = [active[INFANTRY], active[ARTILLERY]]
 			if(attack):
 				while counter[INFANTRY] > 0 and counter[ARTILLERY] > 0:
 					round_hits[INFANTRY] += 1
@@ -80,7 +80,7 @@ class Army:
 			if any((x < 0 for x in expected_hits)):
 				print("ERROR: negative expected hits. Dumping...")
 				print("total: " + str(self.total))
-				print("active: " + str(self.active))
+				print("active: " + str(active))
 				print("power: " + str(power))
 				print("expected_hits: " + str(expected_hits))
 				print("round: " + str(i))
@@ -89,23 +89,23 @@ class Army:
 			
 			#take wounds
 			for w in range(self.wounds_per_round):
-				if(not attack and self.active[BOMBER] > 0):
-					self.active[BOMBER] -= 1
-				elif(self.active[INFANTRY] > 0):
-					self.active[INFANTRY] -= 1
-				elif (self.active[ARTILLERY] > 0):
-					self.active[ARTILLERY] -= 1
-				elif (self.active[TANK] > 0):
-					self.active[TANK] -= 1
-				elif (attack and self.active[FIGHTER] > 0):
-					self.active[FIGHTER] -= 1
-				elif (not attack and self.active[FIGHTER] > 0):
-					self.active[FIGHTER] -= 1
-				elif (attack and self.active[BOMBER] > 0):
-					self.active[BOMBER] -= 1
+				if(not attack and active[BOMBER] > 0):
+					active[BOMBER] -= 1
+				elif(active[INFANTRY] > 0):
+					active[INFANTRY] -= 1
+				elif (active[ARTILLERY] > 0):
+					active[ARTILLERY] -= 1
+				elif (active[TANK] > 0):
+					active[TANK] -= 1
+				elif (attack and active[FIGHTER] > 0):
+					active[FIGHTER] -= 1
+				elif (not attack and active[FIGHTER] > 0):
+					active[FIGHTER] -= 1
+				elif (attack and active[BOMBER] > 0):
+					active[BOMBER] -= 1
 				else:
 					# if we ever have no more troops left to fight, then the fight is done and we return
-					assert(not any(self.active)) # we should have no troops
+					assert(not any(active)) # we should have no troops
 					return expected_hits
 		return expected_hits
 
