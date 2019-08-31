@@ -1,5 +1,6 @@
 import argparse
 import os
+from simulation_logger import simulation_logger
 
 INFANTRY = 0
 ARTILLERY = 1
@@ -156,10 +157,12 @@ def score_roster(roster, rounds, wounds = 1):
 		army.score_army(rounds = rounds, wounds_per_round = wounds)
 
 #roster is passed in rather than returned to keep large rosters off the stack (not *certain* how that would work in python, but better safe than sorry)
+
 def run_simulation(roster, rounds, costs, wounds = 1):
 	generate_ground_roster(roster, max_value = costs)
 	score_roster(roster, rounds=rounds, wounds = wounds)
 
+@simulation_logger
 def write_overview(rounds, costs, wounds, overview_file_prefix = "overview_matrix", atk_file_name = "overview_attack.txt", def_file_name = "overview_defense.txt", overall_file_name = "overview_overall.txt"):
 	column_headers = ["{:^20}".format(c) for c in costs]
 	row_headers = ["{:>2}".format(r) for r in rounds]
@@ -239,7 +242,7 @@ def main():
 		if not os.path.isdir(simulation_directory):
 			os.mkdir(simulation_directory)
 		os.chdir(simulation_directory)
-		write_overview(rounds, costs, wounds)
+		write_overview(rounds = rounds, costs = costs, wounds = wounds)
 
 		if not os.path.isdir("detailed_reports"):
 			os.mkdir("detailed_reports")
