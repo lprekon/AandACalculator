@@ -1,42 +1,42 @@
 import argparse
 import os
 from simulation_logger import simulation_logger
-from Army import *
+import Army
 
 		 
 def generate_ground_roster(roster, max_value = 40):
-	order_of_battle = [0 for i in range(NUM_UNIT_TYPES)]
-	muster = Army(*order_of_battle) # make an empty army
+	order_of_battle = [0 for i in range(Army.NUM_UNIT_TYPES)]
+	muster = Army.Army(*order_of_battle) # make an empty army
 	while muster.cost <= max_value: # bombers
 		while muster.cost <= max_value: #fighters
 			while muster.cost <= max_value: #tanks:
 				while muster.cost <= max_value: #artillery
 					while muster.cost <= max_value: #infantry
 						roster.append(muster)
-						order_of_battle[INFANTRY] += 1
-						muster = Army(*order_of_battle)
+						order_of_battle[Army.INFANTRY] += 1
+						muster = Army.Army(*order_of_battle)
 					#Too many infantry. Reset and add arillery
-					order_of_battle[INFANTRY] = 0
-					order_of_battle[ARTILLERY] += 1
-					muster = Army(*order_of_battle)
+					order_of_battle[Army.INFANTRY] = 0
+					order_of_battle[Army.ARTILLERY] += 1
+					muster = Army.Army(*order_of_battle)
 				#Too many artillery. Reset and add tank
-				order_of_battle[INFANTRY] = 0
-				order_of_battle[ARTILLERY] = 0
-				order_of_battle[TANK] += 1
-				muster = Army(*order_of_battle)
+				order_of_battle[Army.INFANTRY] = 0
+				order_of_battle[Army.ARTILLERY] = 0
+				order_of_battle[Army.TANK] += 1
+				muster = Army.Army(*order_of_battle)
 			#Too many tank. Reset and add fighter
-			order_of_battle[INFANTRY] = 0
-			order_of_battle[ARTILLERY] = 0
-			order_of_battle[TANK] = 0
-			order_of_battle[FIGHTER] += 1
-			muster = Army(*order_of_battle)
+			order_of_battle[Army.INFANTRY] = 0
+			order_of_battle[Army.ARTILLERY] = 0
+			order_of_battle[Army.TANK] = 0
+			order_of_battle[Army.FIGHTER] += 1
+			muster = Army.Army(*order_of_battle)
 		#Too many fighter. Reset and add bomber
-		order_of_battle[INFANTRY] = 0
-		order_of_battle[ARTILLERY] = 0
-		order_of_battle[TANK] = 0
-		order_of_battle[FIGHTER] = 0
-		order_of_battle[BOMBER] += 1
-		muster = Army(*order_of_battle)
+		order_of_battle[Army.INFANTRY] = 0
+		order_of_battle[Army.ARTILLERY] = 0
+		order_of_battle[Army.TANK] = 0
+		order_of_battle[Army.FIGHTER] = 0
+		order_of_battle[Army.BOMBER] += 1
+		muster = Army.Army(*order_of_battle)
 
 def score_roster(roster, rounds, wounds = 1):
 	for army in roster:
@@ -123,8 +123,8 @@ def main():
 	costs = [i for i in range (5, 45, 5)]
 	start_path = os.getcwd()
 	for wounds in range (1, 6):
-		#simulation_directory = "overview_RND" +  "{:0>2}".format(str(rounds[0])) + "-" + "{:0>2}".format(str(rounds[-1])) + "_COSTS" + "{:0>2}".format(str(costs[0])) + "-" + "{:0>2}".format(str(costs[-1])) + "-" + "{:0>2}".format(str(costs[1] - costs[0]))
-		simulation_directory = "simulation_RND{:0>2}-{:0>2}_COSTS{:0>2}-{:0>2}-{:0>2}_WOUNDS{:0>2}".format(rounds[0], rounds[-1], costs[0], costs[-1], (costs[1] - costs[0]), wounds)
+		#simulation_directory = "overview_Army.RND" +  "{:0>2}".format(str(rounds[0])) + "-" + "{:0>2}".format(str(rounds[-1])) + "_COSTS" + "{:0>2}".format(str(costs[0])) + "-" + "{:0>2}".format(str(costs[-1])) + "-" + "{:0>2}".format(str(costs[1] - costs[0]))
+		simulation_directory = "simulation_Army.RND{:0>2}-{:0>2}_COSTS{:0>2}-{:0>2}-{:0>2}_WOUNDS{:0>2}".format(rounds[0], rounds[-1], costs[0], costs[-1], (costs[1] - costs[0]), wounds)
 		if not os.path.isdir(simulation_directory):
 			os.mkdir(simulation_directory)
 		os.chdir(simulation_directory)
