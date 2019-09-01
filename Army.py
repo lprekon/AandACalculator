@@ -4,7 +4,6 @@ TANK = 2
 FIGHTER = 3
 BOMBER = 4
 
-NUM_UNIT_TYPES = 5
 
 STATS = {}
 STATS[INFANTRY] = {"name":"INFANTRY", "attack":1, "defense":2, "cost":3}
@@ -12,6 +11,8 @@ STATS[ARTILLERY] = {"name":"ARTILLERY", "attack":2, "defense":2, "cost":4}
 STATS[TANK] = {"name":"TANK", "attack":3, "defense":3, "cost":5}
 STATS[FIGHTER] = {"name":"FIGHTER", "attack":3, "defense":4, "cost":10}
 STATS[BOMBER] = {"name":"BOMBER", "attack":4, "defense":1, "cost":12}
+
+NUM_UNIT_TYPES = len(STATS)
 
 class Army:
 	def __init__(self, infantry = 0, artillery = 0, tank = 0, fighter = 0, bomber = 0):
