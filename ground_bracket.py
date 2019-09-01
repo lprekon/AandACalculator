@@ -40,7 +40,7 @@ def generate_ground_roster(roster, max_value = 40):
 
 def score_roster(roster, rounds, wounds = 1):
 	for army in roster:
-		army.score_army(rounds = rounds, wounds_per_round = wounds)
+		army.score_self(rounds = rounds, wounds_per_round = wounds)
 
 #roster is passed in rather than returned to keep large rosters off the stack (not *certain* how that would work in python, but better safe than sorry)
 
