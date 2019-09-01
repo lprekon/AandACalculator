@@ -48,7 +48,8 @@ class Navy(ground_bracket.Army):
 		self.wounds_absorbed_by_battleships = 0
 		return super.simulate_combat(attack)
 
-	def calculate_hits(self, attack, power):
+	def calculate_hits_extra(self, attack, power):
+		return 0
 
 	def take_wounds(self, attack):
 		for w in range(self.wounds_per_round):
