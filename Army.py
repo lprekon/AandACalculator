@@ -85,13 +85,17 @@ class Army:
 		round_hits = [0 for j in range(NUM_UNIT_TYPES)]
 		for j in range(NUM_UNIT_TYPES):
 			round_hits[j] = self.active[j] * power[j]
+		return sum(round_hits) + self.calculate_hits_extra(attack, power)
+
+	def calculate_hits_extra(self, attack, power):
 		counter = [self.active[INFANTRY], self.active[ARTILLERY]]
+		extra_hits = 0
 		if(attack):
 			while counter[INFANTRY] > 0 and counter[ARTILLERY] > 0:
-				round_hits[INFANTRY] += 1
+				extra_hits[INFANTRY] += 1
 				counter[INFANTRY] -= 1
 				counter[ARTILLERY] -= 1
-		return sum(round_hits)
+		return extra_hits
 
 	def __str__(self):
 		val = ""
