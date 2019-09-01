@@ -218,8 +218,8 @@ def write_report(rounds, costs, wounds, atk_file_prefix = "attack", def_file_pre
 		for c in costs:
 			roster = []
 			run_simulation(roster=roster, rounds=r, wounds=wounds, costs=c)
-			attackers_ranked = sorted(roster, key = lambda x: x.atk_score, reverse = True)
-			defenders_ranked = sorted(roster, key = lambda x: x.def_score, reverse = True)
+			attackers_ranked = sorted(roster, key = lambda x: x.atk_score*1000 + sum(x.atk_card), reverse = True)
+			defenders_ranked = sorted(roster, key = lambda x: x.def_score*1000 + sum(x.def_card), reverse = True)
 			with open("{}_Rounds-{:0>2}_Cost-{:0>2}.txt".format(atk_file_prefix, r, c), 'w') as atk_file, open("{}_Rounds-{:0>2}_Cost-{:0>2}.txt".format(def_file_prefix, r, c), 'w') as def_file:
 				for i in range(min(entries_per_log, len(roster))):
 					atk_file.write(str(attackers_ranked[i]) + "\n")
