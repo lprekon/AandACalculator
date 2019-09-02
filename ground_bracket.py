@@ -70,9 +70,9 @@ def write_overview(rounds, costs, wounds, overview_file_prefix = "overview_matri
 			for c in costs:
 				roster = []
 				run_simulation(roster=roster, rounds=r, costs=c, wounds = wounds)
-				attackers_ranked = sorted(roster, key = lambda x: (x.atk_score, sum(x.atk_card)), reverse = True)
-				defenders_ranked = sorted(roster, key = lambda x: (x.def_score, sum(x.def_card)), reverse = True)
-				overall_ranked = sorted(roster, key = lambda x: x.atk_score + x.def_score, reverse = True)
+				attackers_ranked = sorted(roster, key = lambda x: x.sorting_key("atk"), reverse = True)
+				defenders_ranked = sorted(roster, key = lambda x: x.sorting_key("def"), reverse = True)
+				overall_ranked = sorted(roster, key = lambda x: x.sorting_key("ova"), reverse = True)
 				best_attacker = attackers_ranked[0]
 				best_defender = defenders_ranked[0]
 				best_overall = overall_ranked[0]
@@ -104,17 +104,27 @@ def write_overview(rounds, costs, wounds, overview_file_prefix = "overview_matri
 	overview_file.write(overall_matrix)
 	overview_file.close()
 
-def create_matrix(roster_list, rounds, costs, wounds, mode = ""):
-	column_headers = ["{:^20}".format(c) for c in costs]
+def create_matrix(roster_list, rounds, costs, wounds, mode = "ova", string_generator = lambda x: x.__str__()):
+	COLUMN_WIDTH = 20
+	column_headers = ["{:^" + str(COLUMN_WIDTH) + "}".format(c) for c in costs]
 	row_headers = ["{:>2}".format(r) for r in rounds]
 	title = "Attackers" if mode == "atk" else "Defenders" if mode == "def" else "Overall"
-	matrix = "{:^122}\n".format("Best Attackers - WOUNDS {:0>2}".format(wounds))
+	matrix = "{:^122}\n".format("Best {} - WOUNDS {:0>2}".format(title, wounds))
 	for c in column_headers:
 		matrix += c
 	for r in rounds:
 		matrix += row_headers[r]
 		for c in costs:
-			best = sorted(roster[r][c], key = lambda x:)
+			best = sorted(roster[r][c], key = lambda x: x.sorting_key(mode))[0]
+			matrix += string_generator(best)
+		matrix += "\n\n"
+
+def generate_ground_string(army, column_width):
+	return "{:^" + str(column_width) + "}".format("I{:0>2}A{:0>2}T{:0>2}F{:0>2}B{:0>2}".format(*army.total))
+
+def generate_sea_string(navy, column_width):
+	return "{:^" + str(column_width) + "}".format("S{:0>2}D{:0>2}Cr{:0>2}F{:0>2}Bo{:0>2}Ca{:0>2}Ba{:0>2}".format(*navy.total))
+
 
 
 def write_report(rounds, costs, wounds, atk_file_prefix = "attack", def_file_prefix = "defend", entries_per_log=20):
