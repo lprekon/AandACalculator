@@ -40,7 +40,7 @@ def generate_ground_roster(roster, max_value = 40):
 
 def score_roster(roster, rounds, wounds = 1):
 	for army in roster:
-		army.score_self(rounds = rounds, wounds_per_round = wounds)
+		army.run_gauntlet(rounds = rounds, wounds_per_round = wounds)
 
 #roster is passed in rather than returned to keep large rosters off the stack (not *certain* how that would work in python, but better safe than sorry)
 
@@ -70,8 +70,8 @@ def write_overview(rounds, costs, wounds, overview_file_prefix = "overview_matri
 			for c in costs:
 				roster = []
 				run_simulation(roster=roster, rounds=r, costs=c, wounds = wounds)
-				attackers_ranked = sorted(roster, key = lambda x: x.atk_score, reverse = True)
-				defenders_ranked = sorted(roster, key = lambda x: x.def_score, reverse = True)
+				attackers_ranked = sorted(roster, key = lambda x: (x.atk_score, sum(x.atk_card)), reverse = True)
+				defenders_ranked = sorted(roster, key = lambda x: (x.def_score, sum(x.def_card)), reverse = True)
 				overall_ranked = sorted(roster, key = lambda x: x.atk_score + x.def_score, reverse = True)
 				best_attacker = attackers_ranked[0]
 				best_defender = defenders_ranked[0]
@@ -103,6 +103,19 @@ def write_overview(rounds, costs, wounds, overview_file_prefix = "overview_matri
 	overview_file.write("Round{:<55}Cost\n".format(""))
 	overview_file.write(overall_matrix)
 	overview_file.close()
+
+def create_matrix(roster_list, rounds, costs, wounds, mode = ""):
+	column_headers = ["{:^20}".format(c) for c in costs]
+	row_headers = ["{:>2}".format(r) for r in rounds]
+	title = "Attackers" if mode == "atk" else "Defenders" if mode == "def" else "Overall"
+	matrix = "{:^122}\n".format("Best Attackers - WOUNDS {:0>2}".format(wounds))
+	for c in column_headers:
+		matrix += c
+	for r in rounds:
+		matrix += row_headers[r]
+		for c in costs:
+			best = sorted(roster[r][c], key = lambda x:)
+
 
 def write_report(rounds, costs, wounds, atk_file_prefix = "attack", def_file_prefix = "defend", entries_per_log=20):
 	for r in rounds:
