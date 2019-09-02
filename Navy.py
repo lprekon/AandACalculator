@@ -19,7 +19,7 @@ STATS[CRUISER] = {"name":"CRUISER", "attack":3, "defense":3, "cost":12}
 STATS[FIGHTER] = {"name":"FIGHTER", "attack":3, "defense":4, "cost":10}
 STATS[BOMBER] = {"name":"BOMBER", "attack":4, "defense":1, "cost":12}
 STATS[CARRIER] = {"name":"CARRIER", "attack":1, "defense":2, "cost":14}
-STATS[BATTLESHIP] = {"name":"CARRIER", "attack":4, "defense":4, "cost":20}
+STATS[BATTLESHIP] = {"name":"BATTLESHIP", "attack":4, "defense":4, "cost":20}
 
 NUM_UNIT_TYPES = len(STATS)
 
