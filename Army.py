@@ -39,7 +39,7 @@ class Army:
 		if mode != "def":
 			score += self.atk_score
 			hits += sum(self.atk_card)
-		if mode != "atl"
+		if mode != "atk":
 			score += self.def_score
 			hits += sum(self.def_card)
 		return (score, hits)
@@ -104,7 +104,7 @@ class Army:
 		extra_hits = 0
 		if(attack):
 			while counter[INFANTRY] > 0 and counter[ARTILLERY] > 0:
-				extra_hits[INFANTRY] += 1
+				extra_hits += 1
 				counter[INFANTRY] -= 1
 				counter[ARTILLERY] -= 1
 		return extra_hits
