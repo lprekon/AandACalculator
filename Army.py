@@ -32,7 +32,19 @@ class Army:
 		self.rounds = 0
 		self.wounds_per_round = 0
 		
-		
+	
+	def sorting_key(self, mode):
+		score = 0
+		hits = 0
+		if mode != "def":
+			score += self.atk_score
+			hits += sum(self.atk_card)
+		if mode != "atl"
+			score += self.def_score
+			hits += sum(self.def_card)
+		return (score, hits)
+
+
 	def score_self(self, rounds = 10, wounds_per_round = 1):
 		self.rounds = rounds
 		self.wounds_per_round = wounds_per_round
