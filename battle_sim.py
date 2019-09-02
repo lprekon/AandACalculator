@@ -2,6 +2,7 @@ import argparse
 import os
 from simulation_logger import *
 import Army
+import Navy
 
 		 
 def generate_ground_roster(max_value = 40):
@@ -38,6 +39,18 @@ def generate_ground_roster(max_value = 40):
 		order_of_battle[Army.FIGHTER] = 0
 		order_of_battle[Army.BOMBER] += 1
 		muster = Army.Army(*order_of_battle)
+	return roster
+
+def generate_sea_roster(max_value = 40):
+	order_of_battle = [0 for i in range(Navy.NUM_UNIT_TYPES)]
+	roster = []
+	muster = Navy.Navy(*order_of_battle) # make an empty navy
+	while muster.cost < max_value: #Battleships
+		while muster.cost < max_value: #Carrier
+			while muster.cost < max_value: #Bomber
+				while muster.cost < max_value: #Fighter
+					while muster.cost < max_value: #Cruiser
+						while muster.cost < max_value
 	return roster
 
 def score_roster(roster, rounds, wounds = 1):
