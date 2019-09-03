@@ -99,21 +99,19 @@ def run_simulation(round_list, cost_list, wounds, roster_generator):
 	return super_roster
 
 
-def write_overview(super_roster, round_list, cost_list, wounds, overview_file_prefix = "overview_matrix", atk_file_name = "overview_attack.txt", def_file_name = "overview_defense.txt", overall_file_name = "overview_overall.txt"):
-	with open(overview_file_prefix + ".txt", 'w') as overview_file:
-		for mode in ["ova", "atk", "def"]:
-			matrix = create_matrix(super_roster, round_list, cost_list, wounds, mode = mode, string_generator = generate_ground_string)
-			overview_file.write(matrix + "\n")
-	with open(atk_file_name, 'w') as atk_file, open(def_file_name, 'w') as def_file, open(overall_file_name, 'w') as ova_file:
-		for r in round_list:
-			for c in cost_list:
-				header_string = "{:<16}{}\n".format("ROUND:{:>2}".format(r), "COST:{:>2}\n".format(c))
-				atk_file.write(header_string)
-				def_file.write(header_string)
-				ova_file.write(header_string)
-				atk_file.write(str(sorted(super_roster[r][c], key = lambda x: x.sorting_key(mode = "atk"), reverse = True)[0]))
-				def_file.write(str(sorted(super_roster[r][c], key = lambda x: x.sorting_key(mode = "def"), reverse = True)[0]))
-				ova_file.write(str(sorted(super_roster[r][c], key = lambda x: x.sorting_key(mode = "ova"), reverse = True)[0]))
+def write_overview(super_roster, round_list, cost_list, wounds, overview_file, atk_file, def_file, ova_file):
+	for mode in ["ova", "atk", "def"]:
+		matrix = create_matrix(super_roster, round_list, cost_list, wounds, mode = mode, string_generator = generate_ground_string)
+		overview_file.write(matrix + "\n")
+	for r in round_list:
+		for c in cost_list:
+			header_string = "{:<16}{}\n".format("ROUND:{:>2}".format(r), "COST:{:>2}\n".format(c))
+			atk_file.write(header_string)
+			def_file.write(header_string)
+			ova_file.write(header_string)
+			atk_file.write(str(sorted(super_roster[r][c], key = lambda x: x.sorting_key(mode = "atk"), reverse = True)[0]))
+			def_file.write(str(sorted(super_roster[r][c], key = lambda x: x.sorting_key(mode = "def"), reverse = True)[0]))
+			ova_file.write(str(sorted(super_roster[r][c], key = lambda x: x.sorting_key(mode = "ova"), reverse = True)[0]))
 
 
 def create_matrix(super_roster, round_list, cost_list, wounds, mode = "ova", string_generator = lambda x: x.__str__()):
@@ -174,7 +172,11 @@ def main():
 		if not os.path.isdir(simulation_directory):
 			os.mkdir(simulation_directory)
 		os.chdir(simulation_directory)
-		write_overview(super_roster = super_roster, round_list = round_list, cost_list = cost_list, wounds = wounds)
+		with open("overview_matrix.txt", 'w') as overview_file, \
+		 open("overview_attack.txt", 'w') as atk_file,\
+		 open("overview_defense.txt", 'w') as def_file,\
+		 open("overview_overall.txt", 'w') as ova_file:
+			write_overview(super_roster=super_roster, round_list=round_list, cost_list=cost_list, wounds=wounds, overview_file=overview_file, atk_file=atk_file, def_file=def_file, ova_file=ova_file)
 
 		if not os.path.isdir("detailed_reports"):
 			os.mkdir("detailed_reports")
