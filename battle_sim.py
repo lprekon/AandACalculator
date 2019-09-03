@@ -178,7 +178,8 @@ def main():
 		os.chdir(simulation_directory)
 		log_simulation(super_roster, round_list, cost_list, wounds, simulation_type="ground")
 		os.chdir(start_path)
-
+	cost_list = [i for i in range(30, 70, 5)]
+	for wounds in range (1, 6):
 		#Navy
 		super_roster = run_simulation(round_list=round_list, cost_list=cost_list, wounds=wounds, roster_generator = generate_sea_roster)
 		simulation_directory = "simulation_Navy.RND{:0>2}-{:0>2}_COSTS{:0>2}-{:0>2}-{:0>2}_WOUNDS{:0>2}".format(round_list[0], round_list[-1], cost_list[0], cost_list[-1], (cost_list[1] - cost_list[0]), wounds)
