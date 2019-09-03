@@ -50,7 +50,35 @@ def generate_sea_roster(max_value = 40):
 			while muster.cost < max_value: #Bomber
 				while muster.cost < max_value: #Fighter
 					while muster.cost < max_value: #Cruiser
-						while muster.cost < max_value
+						while muster.cost < max_value: #Destroyer
+							while muster.cost < max_value: #Submarine
+								roster.append(muster)
+								order_of_battle[Navy.SUBMARINE] += 1
+								muster = Navy.Navy(*order_of_battle)
+							#Too many submarine. Reset and add destroyer
+							order_of_battle[Navy.SUBMARINE] = 0
+							order_of_battle[Navy.DESTROYER] += 1
+							muster = Navy.Navy(*order_of_battle)
+						#Too many destroyer. Reset and add Cruiser
+						order_of_battle[Navy.DESTROYER] = 0
+						order_of_battle[Navy.CRUISER] += 1
+						muster = Navy.Navy(*order_of_battle)
+					#Too many cruiser. Reset and add fighter
+					order_of_battle[Navy.CRUISER] = 0
+					order_of_battle[Navy.FIGHTER] += 1
+					muster = Navy.Navy(*order_of_battle)
+				#Too many fighter. Reset and add bomber
+				order_of_battle[Navy.FIGHTER] = 0
+				order_of_battle[Navy.BOMBER] += 1
+				muster = Navy.Navy(*order_of_battle)
+			#Too many bomber. Reset and add Carrier
+			order_of_battle[Navy.BOMBER] = 0
+			order_of_battle[Navy.CARRIER] += 1
+			muster = Navy.Navy(*order_of_battle)
+		#Too many carrier. Reset and add battleship
+		order_of_battle[Navy.CARRIER] = 0
+		order_of_battle[Navy.BATTLESHIP] += 1
+		muster = Navy.Navy(*order_of_battle)
 	return roster
 
 def score_roster(roster, rounds, wounds = 1):
