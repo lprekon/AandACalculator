@@ -114,7 +114,7 @@ def write_overview(super_roster, round_list, cost_list, wounds, column_width, ov
 			ova_file.write(str(sorted(super_roster[r][c], key=lambda x: x.sorting_key(mode="ova"), reverse=True)[0]))
 
 
-def create_matrix_generic(super_roster, round_list, cost_list, wounds, mode = "ova", string_generator = lambda x: x.__str__(), column_width):
+def create_matrix(super_roster, round_list, cost_list, wounds, column_width, mode = "ova", string_generator = lambda x: x.__str__()):
 	assert(super_roster != None)
 	column_headers = [("{:^" + str(column_width) + "}").format(c) for c in cost_list]
 	row_headers = ["{:>2}".format(r) for r in round_list]
@@ -190,10 +190,10 @@ def log_simulation(super_roster, round_list, cost_list, wounds, column_width):
 		 open("overview_overall.txt", 'w') as ova_file:
 			write_overview(super_roster=super_roster, round_list=round_list, cost_list=cost_list, wounds=wounds, column_width=column_width, overview_file=overview_file, atk_file=atk_file, def_file=def_file, ova_file=ova_file)
 
-		if not os.path.isdir("detailed_reports"):
-			os.mkdir("detailed_reports")
-		os.chdir("detailed_reports")
-		write_report(super_roster = super_roster, round_list = round_list, cost_list =cost_list)
+	if not os.path.isdir("detailed_reports"):
+		os.mkdir("detailed_reports")
+	os.chdir("detailed_reports")
+	write_report(super_roster = super_roster, round_list = round_list, cost_list =cost_list)
 
 if __name__ == '__main__':
 	main()
