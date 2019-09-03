@@ -165,14 +165,27 @@ def main():
 	cost_list = [i for i in range (5, 45, 5)]
 	start_path = os.getcwd()
 	for wounds in range (1, 6):
+		#Army
 		super_roster = run_simulation(round_list=round_list, cost_list=cost_list, wounds=wounds, roster_generator = generate_ground_roster)
 		assert super_roster != None
-		#simulation_directory = "overview_Army.RND" +  "{:0>2}".format(str(rounds[0])) + "-" + "{:0>2}".format(str(rounds[-1])) + "_COSTS" + "{:0>2}".format(str(costs[0])) + "-" + "{:0>2}".format(str(costs[-1])) + "-" + "{:0>2}".format(str(costs[1] - costs[0]))
 		simulation_directory = "simulation_Army.RND{:0>2}-{:0>2}_COSTS{:0>2}-{:0>2}-{:0>2}_WOUNDS{:0>2}".format(round_list[0], round_list[-1], cost_list[0], cost_list[-1], (cost_list[1] - cost_list[0]), wounds)
 		if not os.path.isdir(simulation_directory):
 			os.mkdir(simulation_directory)
 		os.chdir(simulation_directory)
-		with open("overview_matrix.txt", 'w') as overview_file, \
+		log_simulation(super_roster, round_list, cost_list, wounds)
+		os.chdir(start_path)
+
+		#Navy
+		super_roster = run_simulation(round_list=round_list, cost_list=cost_list, wounds=wounds, roster_generator = generate_ground_roster)
+		simulation_directory = "simulation_Navy.RND{:0>2}-{:0>2}_COSTS{:0>2}-{:0>2}-{:0>2}_WOUNDS{:0>2}".format(round_list[0], round_list[-1], cost_list[0], cost_list[-1], (cost_list[1] - cost_list[0]), wounds)
+		if not os.path.isdir(simulation_directory):
+			os.mkdir(simulation_directory)
+		os.chdir(simulation_directory)
+		log_simulation(super_roster, round_list, cost_list, wounds)
+		os.chdir(start_path)
+
+def log_simulation(super_roster, round_list, cost_list, wounds):
+	with open("overview_matrix.txt", 'w') as overview_file, \
 		 open("overview_attack.txt", 'w') as atk_file,\
 		 open("overview_defense.txt", 'w') as def_file,\
 		 open("overview_overall.txt", 'w') as ova_file:
@@ -182,8 +195,6 @@ def main():
 			os.mkdir("detailed_reports")
 		os.chdir("detailed_reports")
 		write_report(super_roster = super_roster, round_list = round_list, cost_list =cost_list)
-		os.chdir(start_path)
-	
 
 if __name__ == '__main__':
 	main()
