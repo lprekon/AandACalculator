@@ -88,12 +88,12 @@ def score_roster(roster, rounds, wounds = 1):
 
 #run_simulation only gets a single wound value because different wound values are considered different simulations
 @simulation_logger
-def run_simulation(round_list, cost_list, wounds):
+def run_simulation(round_list, cost_list, wounds, roster_generator):
 	super_roster = {}
 	for r in round_list:
 		super_roster[r] = {}
 		for c in cost_list:
-			super_roster[r][c] = generate_ground_roster(max_value = c)
+			super_roster[r][c] = roster_generator(max_value = c)
 			score_roster(super_roster[r][c], rounds=r, wounds = wounds)
 	assert super_roster != None
 	return super_roster
@@ -167,7 +167,7 @@ def main():
 	cost_list = [i for i in range (5, 45, 5)]
 	start_path = os.getcwd()
 	for wounds in range (1, 6):
-		super_roster = run_simulation(round_list=round_list, cost_list=cost_list, wounds=wounds)
+		super_roster = run_simulation(round_list=round_list, cost_list=cost_list, wounds=wounds, roster_generator = generate_ground_roster)
 		assert super_roster != None
 		#simulation_directory = "overview_Army.RND" +  "{:0>2}".format(str(rounds[0])) + "-" + "{:0>2}".format(str(rounds[-1])) + "_COSTS" + "{:0>2}".format(str(costs[0])) + "-" + "{:0>2}".format(str(costs[-1])) + "-" + "{:0>2}".format(str(costs[1] - costs[0]))
 		simulation_directory = "simulation_Army.RND{:0>2}-{:0>2}_COSTS{:0>2}-{:0>2}-{:0>2}_WOUNDS{:0>2}".format(round_list[0], round_list[-1], cost_list[0], cost_list[-1], (cost_list[1] - cost_list[0]), wounds)
