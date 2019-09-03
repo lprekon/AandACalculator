@@ -25,6 +25,7 @@ NUM_UNIT_TYPES = len(STATS)
 
 class Navy(ground_bracket.Army):
 
+	#fighters represent fighters from nearby land
 	def __init__(self, submarine = 0, destroyer = 0, cruiser = 0, fighter = 0, bomber = 0, carrier = 0, battleship = 0):
 		self.total = [0 for i in range(NUM_UNIT_TYPES)]
 		self.total[SUBMARINE] = submarine
@@ -46,7 +47,24 @@ class Navy(ground_bracket.Army):
 
 	def simulate_combat(self, attack=True):
 		self.wounds_absorbed_by_battleships = 0
-		return super.simulate_combat(attack)
+		self.active = self.total.copy()
+		#If we have more fighters than we could have on defense, reduce fighter count to max possible
+		#Invalid counts will have a higher cost, and thus be sorted below valid counts
+		if not attack:
+			self.active[FIGHTER] = min(self.active[FIGHTER], self.active[CARRIER] * 2)
+		power = [STATS[i]["attack"] if attack else STATS[i]["defense"] for i in range(NUM_UNIT_TYPES)]
+		expected_hits = [0 for i in range(self.rounds)]
+		assert(all((x>=0 for x in expected_hits)))
+		
+		#run simulation
+		for i in range (self.rounds):
+			#calculate hits
+			expected_hits[i] = self.calculate_hits(power = power, attack = attack) / 6.0
+			#take wounds
+			if not self.take_wounds(attack):
+				return expected_hits # if take_wounds returned false, we're out of the fight
+			
+		return expected_hits
 
 	def calculate_hits_extra(self, attack, power):
 		return 0
