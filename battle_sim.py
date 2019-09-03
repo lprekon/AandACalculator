@@ -99,9 +99,14 @@ def run_simulation(round_list, cost_list, wounds, roster_generator):
 	return super_roster
 
 
-def write_overview(super_roster, round_list, cost_list, wounds, column_width, overview_file, atk_file, def_file, ova_file):
+def write_overview(super_roster, round_list, cost_list, wounds, simulation_type, overview_file, atk_file, def_file, ova_file):
 	for mode in ["ova", "atk", "def"]:
-		matrix = create_matrix(super_roster, round_list, cost_list, wounds, mode=mode, string_generator=generate_ground_string, column_width=column_width)
+		if simulation_type == "ground":
+			matrix = create_matrix(super_roster, round_list, cost_list, wounds, mode=mode, string_generator=generate_ground_string, column_width=(3*Army.NUM_UNIT_TYPES+5))
+		elif simulation_type == "sea":
+			matrix = create_matrix(super_roster, round_list, cost_list, wounds, mode=mode, string_generator=generate_sea_string, column_width=(3*Navy.NUM_UNIT_TYPES+5))
+		else:
+			raise Exception("Unknown simulation type")
 		overview_file.write(matrix + "\n")
 	for r in round_list:
 		for c in cost_list:
@@ -171,7 +176,7 @@ def main():
 		if not os.path.isdir(simulation_directory):
 			os.mkdir(simulation_directory)
 		os.chdir(simulation_directory)
-		log_simulation(super_roster, round_list, cost_list, wounds, column_width=(3*Army.NUM_UNIT_TYPES+5))
+		log_simulation(super_roster, round_list, cost_list, wounds, simulation_type="ground")
 		os.chdir(start_path)
 
 		#Navy
@@ -180,15 +185,15 @@ def main():
 		if not os.path.isdir(simulation_directory):
 			os.mkdir(simulation_directory)
 		os.chdir(simulation_directory)
-		log_simulation(super_roster, round_list, cost_list, wounds, column_width=(3*Navy.NUM_UNIT_TYPES+5))
+		log_simulation(super_roster, round_list, cost_list, wounds, simulation_type="sea")
 		os.chdir(start_path)
 
-def log_simulation(super_roster, round_list, cost_list, wounds, column_width):
+def log_simulation(super_roster, round_list, cost_list, wounds, simulation_type):
 	with open("overview_matrix.txt", 'w') as overview_file, \
 		 open("overview_attack.txt", 'w') as atk_file,\
 		 open("overview_defense.txt", 'w') as def_file,\
 		 open("overview_overall.txt", 'w') as ova_file:
-			write_overview(super_roster=super_roster, round_list=round_list, cost_list=cost_list, wounds=wounds, column_width=column_width, overview_file=overview_file, atk_file=atk_file, def_file=def_file, ova_file=ova_file)
+			write_overview(super_roster=super_roster, round_list=round_list, cost_list=cost_list, wounds=wounds, simulation_type=simulation_type, overview_file=overview_file, atk_file=atk_file, def_file=def_file, ova_file=ova_file)
 
 	if not os.path.isdir("detailed_reports"):
 		os.mkdir("detailed_reports")
