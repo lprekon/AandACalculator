@@ -96,3 +96,18 @@ class Navy(Army.Army):
 			else:
 				return False
 		return True
+
+	def __str__(self):
+		val = ""
+		for i in range(NUM_UNIT_TYPES):
+			val += "{:<15} {}\n".format(STATS[i]["name"], self.total[i])
+
+		val += "COST\t\t" + str(self.cost) + "\n" +\
+		 "ATK\t\t" + str(self.atk_score)+ "\n" +\
+		 "DEF\t\t" + str(self.def_score) + "\n" +\
+		 "RNDS\t\t" + str(self.rounds) + "\n" +\
+		 "WNDS\t\t" + str(self.wounds_per_round) + "\n" +\
+		 "ATKCARD\t" + str(self.atk_card) + "\n" +\
+		 "DEFCARD\t" + str(self.def_card) + "\n"
+		
+		return val
