@@ -99,9 +99,9 @@ def run_simulation(round_list, cost_list, wounds, roster_generator):
 	return super_roster
 
 
-def write_overview(super_roster, round_list, cost_list, wounds, overview_file, atk_file, def_file, ova_file):
+def write_overview(super_roster, round_list, cost_list, wounds, column_width, overview_file, atk_file, def_file, ova_file):
 	for mode in ["ova", "atk", "def"]:
-		matrix = create_matrix(super_roster, round_list, cost_list, wounds, mode = mode, string_generator = generate_ground_string)
+		matrix = create_matrix(super_roster, round_list, cost_list, wounds, mode=mode, string_generator=generate_ground_string, column_width=column_width)
 		overview_file.write(matrix + "\n")
 	for r in round_list:
 		for c in cost_list:
@@ -109,15 +109,14 @@ def write_overview(super_roster, round_list, cost_list, wounds, overview_file, a
 			atk_file.write(header_string)
 			def_file.write(header_string)
 			ova_file.write(header_string)
-			atk_file.write(str(sorted(super_roster[r][c], key = lambda x: x.sorting_key(mode = "atk"), reverse = True)[0]))
-			def_file.write(str(sorted(super_roster[r][c], key = lambda x: x.sorting_key(mode = "def"), reverse = True)[0]))
-			ova_file.write(str(sorted(super_roster[r][c], key = lambda x: x.sorting_key(mode = "ova"), reverse = True)[0]))
+			atk_file.write(str(sorted(super_roster[r][c], key=lambda x: x.sorting_key(mode="atk"), reverse=True)[0]))
+			def_file.write(str(sorted(super_roster[r][c], key=lambda x: x.sorting_key(mode="def"), reverse=True)[0]))
+			ova_file.write(str(sorted(super_roster[r][c], key=lambda x: x.sorting_key(mode="ova"), reverse=True)[0]))
 
 
-def create_matrix(super_roster, round_list, cost_list, wounds, mode = "ova", string_generator = lambda x: x.__str__()):
+def create_matrix_generic(super_roster, round_list, cost_list, wounds, mode = "ova", string_generator = lambda x: x.__str__(), column_width):
 	assert(super_roster != None)
-	COLUMN_WIDTH = 20
-	column_headers = [("{:^" + str(COLUMN_WIDTH) + "}").format(c) for c in cost_list]
+	column_headers = [("{:^" + str(column_width) + "}").format(c) for c in cost_list]
 	row_headers = ["{:>2}".format(r) for r in round_list]
 	title = "Attackers" if mode == "atk" else "Defenders" if mode == "def" else "Overall"
 	matrix = "{:^122}\n".format("Best {} - WOUNDS {:0>2}".format(title, wounds))
@@ -130,7 +129,7 @@ def create_matrix(super_roster, round_list, cost_list, wounds, mode = "ova", str
 			roster = super_roster[round_list[i]][c]
 			sorted_roster = sorted(roster, key = lambda x: x.sorting_key(mode), reverse = True)
 			best = sorted_roster[0]
-			matrix += string_generator(best, COLUMN_WIDTH)
+			matrix += string_generator(best, column_width)
 		matrix += "\n\n"
 	return matrix
 
@@ -172,7 +171,7 @@ def main():
 		if not os.path.isdir(simulation_directory):
 			os.mkdir(simulation_directory)
 		os.chdir(simulation_directory)
-		log_simulation(super_roster, round_list, cost_list, wounds)
+		log_simulation(super_roster, round_list, cost_list, wounds, column_width=(3*Army.NUM_UNIT_TYPES+5))
 		os.chdir(start_path)
 
 		#Navy
@@ -181,15 +180,15 @@ def main():
 		if not os.path.isdir(simulation_directory):
 			os.mkdir(simulation_directory)
 		os.chdir(simulation_directory)
-		log_simulation(super_roster, round_list, cost_list, wounds)
+		log_simulation(super_roster, round_list, cost_list, wounds, column_width=(3*Navy.NUM_UNIT_TYPES+5))
 		os.chdir(start_path)
 
-def log_simulation(super_roster, round_list, cost_list, wounds):
+def log_simulation(super_roster, round_list, cost_list, wounds, column_width):
 	with open("overview_matrix.txt", 'w') as overview_file, \
 		 open("overview_attack.txt", 'w') as atk_file,\
 		 open("overview_defense.txt", 'w') as def_file,\
 		 open("overview_overall.txt", 'w') as ova_file:
-			write_overview(super_roster=super_roster, round_list=round_list, cost_list=cost_list, wounds=wounds, overview_file=overview_file, atk_file=atk_file, def_file=def_file, ova_file=ova_file)
+			write_overview(super_roster=super_roster, round_list=round_list, cost_list=cost_list, wounds=wounds, column_width=column_width, overview_file=overview_file, atk_file=atk_file, def_file=def_file, ova_file=ova_file)
 
 		if not os.path.isdir("detailed_reports"):
 			os.mkdir("detailed_reports")
