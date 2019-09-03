@@ -175,7 +175,7 @@ def main():
 		os.chdir(start_path)
 
 		#Navy
-		super_roster = run_simulation(round_list=round_list, cost_list=cost_list, wounds=wounds, roster_generator = generate_ground_roster)
+		super_roster = run_simulation(round_list=round_list, cost_list=cost_list, wounds=wounds, roster_generator = generate_sea_roster)
 		simulation_directory = "simulation_Navy.RND{:0>2}-{:0>2}_COSTS{:0>2}-{:0>2}-{:0>2}_WOUNDS{:0>2}".format(round_list[0], round_list[-1], cost_list[0], cost_list[-1], (cost_list[1] - cost_list[0]), wounds)
 		if not os.path.isdir(simulation_directory):
 			os.mkdir(simulation_directory)
